@@ -3,22 +3,14 @@ import { StyleSheet, Text, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator, createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Home from './Home'
-import Undefined1 from './Undefined1'
-import Undefined2 from './Undefined2'
+
+import Profile from './Profile'
 import Explore from './Explore'
 import Scanner from './Scanner'
 
-const mainNavigation = createMaterialTopTabNavigator({
-  Home: {
-        screen: Home,
-        navigationOptions: {
-          tabBarLabel: '',
-          title: '',
-        },
-      },
-  Undefined1: {
-        screen: Undefined1,
+const mainNavigation = createBottomTabNavigator({
+  Explore: {
+        screen: Explore,
         navigationOptions: {
           tabBarLabel: '',
           title: '',
@@ -31,15 +23,8 @@ const mainNavigation = createMaterialTopTabNavigator({
           title: '',
         },
       },
-  Explore: {
-        screen: Explore,
-        navigationOptions: {
-          tabBarLabel: '',
-          title: '',
-        },
-      },
-  Undefined2: {
-        screen: Undefined2,
+  Profile: {
+        screen: Profile,
         navigationOptions: {
           tabBarLabel: '',
           title: '',
@@ -52,42 +37,49 @@ const mainNavigation = createMaterialTopTabNavigator({
       tabBarIcon: ({ focused, horizontal, tintColor }) => {
         const { routeName } = navigation.state;
         let iconName;
-        if (routeName === 'Home') {
+        if (routeName === 'Explore') {
           iconName = `home`;
         }
-        else if (routeName === 'Undefined1') {
-          iconName = `interrogation`;
+        else if (routeName === 'Profile') {
+          iconName = `user`;
         }
         else if (routeName === 'Scanner') {
           iconName = `qrcode`;
           return (
-            <View style={{width:60,height:60,borderRadius:30,backgroundColor:'#ff6666',justifyContent:'center',alignItems:'center'}}>
-              <Icon name={'qrcode'} size={46} color={'white'}/>
+            <View style={{
+                width:80,
+                height:80,
+                borderRadius:40,
+                backgroundColor:'#f5b03a',
+                justifyContent:'center',
+                alignItems:'center',
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 4,
+                },
+                shadowOpacity: 0.30,
+                shadowRadius: 4.65,
+                elevation: 8}}>
+              <Icon name={'barcode'} size={50} color={'white'}/>
             </View>
           )
         }
-        else if (routeName === 'Explore') {
-          iconName = `search`;
-        }
-        else if (routeName === 'Undefined2') {
-          iconName = `interrogation`;
-        }
         return (
-          <View style={{width:60,height:60,justifyContent:'center',alignItems:'center'}}>
-            <Icon name={iconName} size={30} color={tintColor}/>
-          </View>
+            <Icon style={{marginTop:20}} name={iconName} size={40} color={tintColor}/>
         );
       },
     }),
     tabBarPosition: 'bottom',
     tabBarOptions: {
-      activeTintColor: '#FF6666',
-      inactiveTintColor: 'gray',
+      activeTintColor: '#f5b03a',
+      inactiveTintColor: 'white',
       style: {
         margin:0,
         padding:0,
-        backgroundColor:'#fff',
-        height: 75,
+        borderTopLeftRadius:10,
+        borderTopRightRadius:10,
+        backgroundColor:'#f7ca79',
         justifyContent:'center',
       },
       indicatorStyle: {
@@ -95,7 +87,7 @@ const mainNavigation = createMaterialTopTabNavigator({
       },
       showIcon: true,
     },
-    initialRouteName: 'Home',
+    initialRouteName: 'Explore',
 });
 
 export default createAppContainer(mainNavigation);
