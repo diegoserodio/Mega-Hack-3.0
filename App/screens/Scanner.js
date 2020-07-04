@@ -12,7 +12,7 @@ export default class Scanner extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor="#FF6666" barStyle='light-content' />
+        <StatusBar backgroundColor="#f9d79c" barStyle='dark-content' />
         <Header title='Escaner' logo={false} arrowBack={false}/>
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
           <TouchableOpacity

@@ -27,8 +27,9 @@ import SignUp from './screens/SignUp'
 import SignIn from './screens/SignIn'
 import Cam from './screens/Cam'
 import Product from './screens/Product'
-import Profile from './screens/Profile'
 import Settings from './screens/Settings'
+import Preferences from './screens/Preferences'
+import UpdatePreferences from './screens/UpdatePreferences'
 
 const AppNavigator = createStackNavigator(
   {
@@ -40,24 +41,6 @@ const AppNavigator = createStackNavigator(
       },
     Cam: {
         screen: Cam,
-        navigationOptions: {
-          headerShown: false,
-        },
-      },
-    Product: {
-        screen: Product,
-        navigationOptions: {
-          headerShown: false,
-        },
-      },
-    Profile: {
-        screen: Profile,
-        navigationOptions: {
-          headerShown: false,
-        },
-      },
-    Settings: {
-        screen: Settings,
         navigationOptions: {
           headerShown: false,
         },
@@ -80,6 +63,24 @@ const AppNavigator = createStackNavigator(
           headerShown: false,
         },
       },
+    Settings: {
+          screen: Settings,
+          navigationOptions: {
+            headerShown: false,
+          },
+        },
+    Preferences: {
+          screen: Preferences,
+          navigationOptions: {
+            headerShown: false,
+          },
+        },
+    UpdatePreferences: {
+          screen: UpdatePreferences,
+          navigationOptions: {
+            headerShown: false,
+          },
+        },
   },
   {
     initialRouteName: 'Loading',

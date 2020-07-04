@@ -40,8 +40,8 @@ export default class Product extends React.Component {
     }
     return (
       <View style={styles.container}>
+      <StatusBar backgroundColor="#FFFDF4" barStyle='dark-content' />
       <ScrollView>
-        <StatusBar backgroundColor="#FFFDF4" barStyle='dark-content' />
         <TouchableOpacity
           style={{marginLeft:30,marginTop:30}}
           onPress={()=>this.props.navigation.goBack()}>
