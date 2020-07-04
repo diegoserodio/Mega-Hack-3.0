@@ -12,7 +12,7 @@ export default class Settings extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor="#FF6666" barStyle='light-content' />
+        <StatusBar backgroundColor="#f9d79c" barStyle='dark-content' />
         <Header title='Configurações' logo={false} arrowBack={true} navigation={this.props.navigation}/>
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
           <Text style={{textAlign:'center', fontSize:32}}>Settings page</Text>

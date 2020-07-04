@@ -4,26 +4,26 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Header from './../Components/Header';
 
-export default class Scanner extends React.Component {
+import * as firebase from 'firebase';
+
+export default class Loading extends React.Component {
   constructor(props){
     super(props);
+  }
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.props.navigation.navigate(user ? "Main" : "SignUp")
+    })
   }
 
   render() {
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#f9d79c" barStyle='dark-content' />
-        <Header title='Escaner' logo={false} arrowBack={false}/>
+        <Header title='Indefinido' logo={false} arrowBack={false}/>
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-          <TouchableOpacity
-            style={{
-              padding:20,
-              borderColor:'white',
-              borderWidth:1,
-              borderRadius:10,
-              backgroundColor:"#ff6666"}} onPress={()=>this.props.navigation.navigate("Cam")}>
-            <Text style={{fontSize:25,color:'white'}}>Escanear QR code</Text>
-          </TouchableOpacity>
+          <Text style={{textAlign:'center', fontSize:32}}>Quase lá...</Text>
         </View>
       </View>
     )
