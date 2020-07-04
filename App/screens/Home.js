@@ -4,6 +4,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Header from './../Components/Header';
 
+import * as firebase from 'firebase';
+
 export default class Home extends React.Component {
   constructor(props){
     super(props);
