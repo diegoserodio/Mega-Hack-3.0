@@ -16,7 +16,9 @@ var firebaseConfig = {
   measurementId: "G-P8JK574EET"
 };
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 
 //IMPORT SCREENS
 import Main from './screens/Main'
@@ -24,6 +26,7 @@ import Loading from './screens/Loading'
 import SignUp from './screens/SignUp'
 import SignIn from './screens/SignIn'
 import Cam from './screens/Cam'
+import Product from './screens/Product'
 import Profile from './screens/Profile'
 import Settings from './screens/Settings'
 
@@ -37,6 +40,12 @@ const AppNavigator = createStackNavigator(
       },
     Cam: {
         screen: Cam,
+        navigationOptions: {
+          headerShown: false,
+        },
+      },
+    Product: {
+        screen: Product,
         navigationOptions: {
           headerShown: false,
         },
