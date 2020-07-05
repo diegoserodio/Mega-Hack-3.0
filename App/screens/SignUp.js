@@ -142,11 +142,8 @@ export default class SignUp extends React.Component {
         email: email,
         points:0
       })
-      // return userCredentials.user.updateProfile({
-      //   displayName: name
-      // });
+      .then(() => this.props.navigation.navigate("Preferences"))
     })
-    .then(() => this.props.navigation.navigate("Main"))
     .catch(error => this.setState({error:error.message}))
   }
 }
