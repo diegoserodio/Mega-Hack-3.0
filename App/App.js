@@ -22,18 +22,28 @@ if (!firebase.apps.length) {
 
 //IMPORT SCREENS
 import Main from './screens/Main'
+import CommercialMain from './screens/CommercialMain'
 import Loading from './screens/Loading'
+import PerfilChoice from './screens/PerfilChoice'
+import CommercialSignUp from './screens/CommercialSignUp'
 import SignUp from './screens/SignUp'
 import SignIn from './screens/SignIn'
 import Camera from './screens/Camera'
 import Product from './screens/Product'
 import Settings from './screens/Settings'
 import Preferences from './screens/Preferences'
+import CommercialPreferences from './screens/CommercialPreferences'
 
 const AppNavigator = createStackNavigator(
   {
     Main: {
         screen: Main,
+        navigationOptions: {
+          headerShown: false,
+        },
+      },
+    CommercialMain: {
+        screen: CommercialMain,
         navigationOptions: {
           headerShown: false,
         },
@@ -46,6 +56,18 @@ const AppNavigator = createStackNavigator(
       },
     Loading: {
         screen: Loading,
+        navigationOptions: {
+          headerShown: false,
+        },
+      },
+    PerfilChoice: {
+        screen: PerfilChoice,
+        navigationOptions: {
+          headerShown: false,
+        },
+      },
+    CommercialSignUp: {
+        screen: CommercialSignUp,
         navigationOptions: {
           headerShown: false,
         },
@@ -70,6 +92,12 @@ const AppNavigator = createStackNavigator(
         },
     Preferences: {
           screen: Preferences,
+          navigationOptions: {
+            headerShown: false,
+          },
+        },
+    CommercialPreferences: {
+          screen: CommercialPreferences,
           navigationOptions: {
             headerShown: false,
           },
