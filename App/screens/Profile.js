@@ -69,6 +69,13 @@ export default class Profile extends React.Component {
             <View style={{flexDirection:'column',alignItems:'center',width:'100%'}}>
               <Text style={{fontSize:35,color:'#999'}}>{userData.points} pontos</Text>
             </View>
+            <View style={{alignItems:'center', justifyContent:'center'}}>
+              <TouchableOpacity
+                style={{...styles.button,backgroundColor:"#f7ca79",marginTop:20}}
+                onPress={()=>this.getCupons()}>
+                <Text style={{fontSize:25,color:'white'}}>Resgatar</Text>
+              </TouchableOpacity>
+            </View>
 
             {this.renderPreferences(userData.preferences.products,userData.preferences.events,userData.preferences.places)}
 
@@ -85,6 +92,53 @@ export default class Profile extends React.Component {
           </ScrollView>
       </View>
     )
+  }
+
+  getCupons(){
+    let {user,userData} = this.state;
+    let cuponIndex = user.uid.substr(-5);
+    firebase.database().ref('cupons/'+cuponIndex).once('value', snapshot => {
+      if(snapshot.val()===null)
+        this.generateCupons(cuponIndex, null);
+      else
+        this.generateCupons(cuponIndex, snapshot.val().cupons);
+    });
+  }
+
+  generateCupons(cuponIndex, existingCupons=[]){
+    let {user,userData} = this.state;
+    if(!existingCupons)existingCupons=[];
+    let currPoints = userData.points;
+    let cuponsQtn = Math.floor(currPoints/100);
+    let cuponsIds = existingCupons;
+    for(let i = 0; i < cuponsQtn; i++){
+      cuponsIds.push(Math.floor(Math.random() * 1000) + 1);
+    }
+
+    let message = '';
+    cuponsIds.map((ids,index) => message+=`Cupom ${index+1}:${cuponIndex}${ids}\n`)
+    alert(message)
+    this.subPoints(cuponsQtn*100);
+    firebase
+    .database()
+    .ref('/cupons/'+cuponIndex)
+    .set({
+      cupons: cuponsIds,
+      displayName: userData.displayName
+    })
+  }
+
+  subPoints(value){
+    let {user,userData} = this.state;
+    let currPoints = userData.points;
+    currPoints -= value;
+    if(currPoints<=0)currPoints=0;
+    firebase
+    .database()
+    .ref('/users/'+user.uid)
+    .update({
+      points: currPoints
+    })
   }
 
   renderPreferences(products,events,places){

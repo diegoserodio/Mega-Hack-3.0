@@ -71,7 +71,8 @@ export default class CommercialProfile extends React.Component {
               />
               <View style={{alignItems:'center', justifyContent:'center'}}>
                 <TouchableOpacity
-                  style={{...styles.button,backgroundColor:"#f7ca79",marginTop:20}}>
+                  style={{...styles.button,backgroundColor:"#f7ca79",marginTop:20}}
+                  onPress={()=>this.validateCupon(discountCode)}>
                   <Text style={{fontSize:25,color:'white'}}>Validar</Text>
                 </TouchableOpacity>
               </View>
@@ -105,6 +106,41 @@ export default class CommercialProfile extends React.Component {
           </ScrollView>
       </View>
     )
+  }
+
+  validateCupon(discountCode){
+    let {user,userData} = this.state;
+    if(discountCode===null)discountCode=0;
+    let cuponIndex = discountCode.slice(0, 5);
+    firebase.database().ref('cupons/'+cuponIndex).once('value', snapshot => {
+      if(snapshot.val()===null)
+        alert("Cupom inválido")
+      else{
+        let valid = false;
+        let currCupons = snapshot.val().cupons;
+        currCupons.map(id => {
+          if(id==discountCode.slice(5)){
+            valid=true;
+            let index = currCupons.indexOf(id);
+            if (index > -1) {
+              currCupons.splice(index, 1);
+            }
+          }
+        })
+        if(valid){
+          firebase
+          .database()
+          .ref('/cupons/'+cuponIndex)
+          .set({
+            cupons: currCupons,
+            displayName: snapshot.val().displayName
+          })
+          alert(`Cupom de R$5,00 para ${snapshot.val().displayName} validado com sucesso!`);
+        }
+        else
+          alert("Cupom inválido")
+      }
+    });
   }
 
   renderFeedback(feedback, usersWithFeedback){
