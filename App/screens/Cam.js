@@ -1,29 +1,74 @@
-import React from 'react'
-import {View, StyleSheet, StatusBar, Text, TouchableOpacity, Alert} from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React, { useState, useEffect } from 'react';
+import { Text, View, Image, StyleSheet, Button, alert } from 'react-native';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 
-import Header from './../Components/Header';
+export default function Cam() {
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
 
-export default class Cam extends React.Component {
-  constructor(props){
-    super(props);
+  useEffect(() => {
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  const handleBarCodeScanned = ({ type, data }) => {
+    setScanned(true);
+    alert(`Bar code  with type ${type} and data ${data} has been scaneed!`);
+  };
+
+  if (hasPermission === null) {
+    return <Text>Permissão para ativar a câmera</Text>
   }
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <StatusBar backgroundColor="#FF6666" barStyle='light-content' />
-        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-          <Text style={{textAlign:'center', fontSize:32}}>Cam page</Text>
-        </View>
+  if (hasPermission === false) {
+    return <Text>Você não pode acessar a câmera</Text>
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <BarCodeScanner
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          style={StyleSheet.absoluteFillObject}>
+          <Text style={styles.description}>Código de Barras</Text>
+          <Image
+          style={styles.qr}
+          source={require('../src/assets/img/QR.png')}
+          />
+        </BarCodeScanner>  
+
+        {scanned && <Button title={'Toque para escanear novamente'} onPress={() => setScanned(false)} />}
       </View>
-    )
-  }
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
     flex: 1,
+    padding: 32,
+    backgroundColor: '#F5F5F5'
   },
-})
+
+  qr: {
+      top: '25%',
+      height: '30%',
+      width: '100%'
+  },
+
+  description: {
+    marginTop: '10%',
+    textAlign: 'center',
+    width: '100%',
+    color: 'white',
+  },
+});
+
+
