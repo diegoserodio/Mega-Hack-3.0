@@ -25,11 +25,10 @@ import Main from './screens/Main'
 import Loading from './screens/Loading'
 import SignUp from './screens/SignUp'
 import SignIn from './screens/SignIn'
-import Cam from './screens/Cam'
+import Camera from './screens/Camera'
 import Product from './screens/Product'
 import Settings from './screens/Settings'
 import Preferences from './screens/Preferences'
-import UpdatePreferences from './screens/UpdatePreferences'
 
 const AppNavigator = createStackNavigator(
   {
@@ -39,8 +38,8 @@ const AppNavigator = createStackNavigator(
           headerShown: false,
         },
       },
-    Cam: {
-        screen: Cam,
+    Camera: {
+        screen: Camera,
         navigationOptions: {
           headerShown: false,
         },
@@ -75,8 +74,8 @@ const AppNavigator = createStackNavigator(
             headerShown: false,
           },
         },
-    UpdatePreferences: {
-          screen: UpdatePreferences,
+    Product: {
+          screen: Product,
           navigationOptions: {
             headerShown: false,
           },

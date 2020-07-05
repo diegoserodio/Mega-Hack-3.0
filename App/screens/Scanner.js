@@ -21,7 +21,7 @@ export default class Scanner extends React.Component {
               borderColor:'white',
               borderWidth:1,
               borderRadius:10,
-              backgroundColor:"#ff6666"}} onPress={()=>this.props.navigation.navigate("Cam")}>
+              backgroundColor:"#f6ba53"}} onPress={()=>this.props.navigation.navigate("Camera")}>
             <Text style={{fontSize:25,color:'white'}}>Escanear QR code</Text>
           </TouchableOpacity>
         </View>
