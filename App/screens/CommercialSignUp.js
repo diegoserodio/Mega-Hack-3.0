@@ -9,16 +9,19 @@ import Header from './../Components/Header';
 
 import * as firebase from 'firebase';
 
-export default class SignUp extends React.Component {
+export default class CommercialSignUp extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       name:'',
       email:'',
+      address:'',
+      cnpj:'',
+      phone:'',
       password:'',
       password_confirmation:'',
-      imageUri:null,
-      error: ''
+      error: '',
+      imageUri: null,
     }
   }
 
@@ -31,13 +34,12 @@ export default class SignUp extends React.Component {
   };
 
   render() {
-    let { name, email, imageUri, password, password_confirmation, error } = this.state;
+    let { name, email, address, cnpj, phone, password, password_confirmation, error } = this.state;
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#fadca9" barStyle='dark-content' />
       <ScrollView>
-      <Text style={{fontSize:60,color:'#fff',marginTop:20,marginLeft:'10%'}}>Olá!</Text>
-      <Text style={{fontSize:30,color:'#fff',marginTop:5,marginBottom:20,marginLeft:'11%'}}>Primeiro, vamos criar uma conta para você! :)</Text>
+      <Text style={{fontSize:30,color:'#fff',marginTop:5,marginBottom:20,marginTop:40,marginLeft:'11%'}}>Vamos criar uma conta para você! :)</Text>
       <View style={{alignItems:'center'}}>
 
       <TouchableOpacity style={styles.photoPicker} onPress={()=>this.choosePicture()}>
@@ -64,6 +66,35 @@ export default class SignUp extends React.Component {
             placeholder='Digite seu email'
             onChangeText={text => this.setState({email:text})}
             value={email}
+          />
+        </View>
+        <View style={{padding:20}}>
+          <Text style={{fontSize:20,color:'#f6ba53'}}>Endereço</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder='Digite o endereço do seu estabalecimento'
+            onChangeText={text => this.setState({address:text})}
+            value={address}
+          />
+        </View>
+        <View style={{padding:20}}>
+          <Text style={{fontSize:20,color:'#f6ba53'}}>CNPJ</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder='Digite o CNPJ do seu estabelecimento'
+            onChangeText={text => this.setState({cnpj:text})}
+            keyboardType='number-pad'
+            value={cnpj}
+          />
+        </View>
+        <View style={{padding:20}}>
+          <Text style={{fontSize:20,color:'#f6ba53'}}>Telefone</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder='Digite o número de telefone do local'
+            onChangeText={text => this.setState({phone:text})}
+            keyboardType='number-pad'
+            value={phone}
           />
         </View>
         <View style={{padding:20}}>
@@ -118,21 +149,23 @@ export default class SignUp extends React.Component {
   async uploadImage(uri, imageName){
     const response = await fetch(uri);
     const blob = await response.blob();
-    var ref = firebase.storage().ref().child("user-accounts/"+imageName);
+    var ref = firebase.storage().ref().child("commercial-accounts/"+imageName);
     return ref.put(blob);
   }
 
   renderRegisterButton() {
-    let { name, email, imageUri, password, password_confirmation, error } = this.state;
+    let { name, email, address, cnpj, phone, password, password_confirmation, imageUri } = this.state;
     let allAnswered = false;
     //Verifica se todos os campos foram respondidos
     if(name.length>0&&
        email.length>0&&
+       address.length>0&&
+       cnpj.length>0&&
+       phone.length>0&&
        imageUri!==null&&
        password.length>0&&
-       password_confirmation.length>0){
+       password_confirmation.length>0)
          allAnswered = true;
-    }
 
     if(allAnswered){
       return(
@@ -156,7 +189,7 @@ export default class SignUp extends React.Component {
   }
 
   register() {
-    let { name, email, imageUri, password, password_confirmation } = this.state;
+    let { name, email, address, cnpj, phone, password, password_confirmation, imageUri } = this.state;
     let register=false;
     //Verifica se as senhas são iguais
     if(password===password_confirmation){
@@ -176,18 +209,22 @@ export default class SignUp extends React.Component {
           .createUserWithEmailAndPassword(email, password)
           .then(userCredentials => {
             userCredentials.user.updateProfile({
-              displayName:'costumer'
+              displayName:'commercial'
             });
             firebase
             .database()
-            .ref('/users/'+userCredentials.user.uid)
+            .ref('/commercial-accounts/'+userCredentials.user.uid)
             .set({
               displayName:name,
               profilePic:imageUri,
               email: email,
-              points:0
+              address:address,
+              cnpj:cnpj,
+              phone:phone,
+              feedback:0,
+              usersWithFeedback:0
             })
-            .then(() => this.props.navigation.navigate("Preferences"))
+            .then(() => this.props.navigation.navigate("CommercialPreferences"))
           })
         })
         .catch(error => this.setState({error:error.message}))

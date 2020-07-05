@@ -1,17 +1,18 @@
 import React from 'react'
-import {View, StyleSheet, StatusBar, Text, TouchableOpacity, Alert, Image, ScrollView} from 'react-native'
+import {View, StyleSheet, StatusBar, Text, TouchableOpacity, Alert, Image, ScrollView, TextInput} from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Header from './../Components/Header';
 
 import * as firebase from 'firebase';
 
-export default class Profile extends React.Component {
+export default class CommercialProfile extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       user: null,
-      userData:null
+      userData:null,
+      discountCode:null
     }
   }
 
@@ -20,7 +21,7 @@ export default class Profile extends React.Component {
   }
 
   render() {
-    let {userData} = this.state;
+    let {userData,discountCode} = this.state;
     if(userData===null){
       return (
         <View style={styles.container}>
@@ -56,27 +57,46 @@ export default class Profile extends React.Component {
             <View style={styles.profileHeader}>
               <Image source={{uri:userData.profilePic}} style={{width:150,height:150,borderRadius:150,margin:20}}/>
               <Text style={{fontSize:25,color:'#fff',textAlign:'center'}}>{userData.displayName}</Text>
-              <Text style={{fontSize:15,color:'#fff',textAlign:'center',marginBottom:10}}>{userData.email}</Text>
+              <Text style={{fontSize:15,color:'#fff',textAlign:'center',marginBottom:10}}>{userData.address}</Text>
+
+              {this.renderFeedback(userData.feedback,userData.usersWithFeedback)}
+
+              <Text style={{fontSize:25,color:'#fff',textAlign:'center',marginTop:40,marginLeft:40,marginRight:40}}>Tem um cliente com desconto do app?</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder='Digite o código de ativação do desconto'
+                placeholderTextColor="#fff"
+                onChangeText={text => this.setState({discountCode:text})}
+                value={discountCode}
+              />
+              <View style={{alignItems:'center', justifyContent:'center'}}>
+                <TouchableOpacity
+                  style={{...styles.button,backgroundColor:"#f7ca79",marginTop:20}}>
+                  <Text style={{fontSize:25,color:'white'}}>Validar</Text>
+                </TouchableOpacity>
+              </View>
             </View>
             </View>
-            <View style={{flexDirection:'row',justifyContent:'center'}}>
-              <Image source={require('./../assets/gluten-free.png')} style={{width:50,height:50}} />
-              <Image source={require('./../assets/gluten-free.png')} style={{width:50,height:50}} />
-              <Image source={require('./../assets/gluten-free.png')} style={{width:50,height:50}} />
+
+            {this.renderPreferences(userData.preferences)}
+
+            <View style={{flexDirection:'column',alignItems:'center',width:'100%',marginTop:10}}>
+              <Text style={{fontSize:20,color:'gray'}}>Quer editar?</Text>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={()=>this.props.navigation.navigate("CommercialPreferences")}>
+                <Text style={{fontSize:25,color:'white'}}>Editar</Text>
+              </TouchableOpacity>
             </View>
 
-            <Text style={{fontSize:25,color:'#f6c267',marginTop:20,textAlign:'center'}}>Você tem</Text>
-            <View style={{flexDirection:'column',alignItems:'center',width:'100%'}}>
-              <Text style={{fontSize:35,color:'#999'}}>{userData.points} pontos</Text>
+            <View style={{flexDirection:'column',alignItems:'center',width:'100%',marginTop:60}}>
+              <TouchableOpacity
+                style={styles.button}>
+                <Text style={{fontSize:25,color:'white'}}>Divulgar um evento</Text>
+              </TouchableOpacity>
             </View>
 
-            {this.renderPreferences(userData.preferences.products,userData.preferences.events,userData.preferences.places)}
-
-            <TouchableOpacity style={{flexDirection:'column',alignItems:'center',width:'100%',margin:20,marginTop:60}} onPress={()=>this.props.navigation.navigate("Preferences")}>
-              <Text style={{fontSize:20,color:'#999',textAlign:'center'}}>Quer editar suas preferências?</Text>
-            </TouchableOpacity>
-
-            <View style={{flexDirection:'column',alignItems:'center',width:'100%'}}>
+            <View style={{flexDirection:'column',alignItems:'center',width:'100%',marginBottom:40}}>
               <TouchableOpacity
                 style={styles.button} onPress={()=>this.signOut()}>
                 <Text style={{fontSize:25,color:'white'}}>Sair</Text>
@@ -87,25 +107,29 @@ export default class Profile extends React.Component {
     )
   }
 
-  renderPreferences(products,events,places){
-    let prodList = [];
-    let eveList = [];
-    let plaList = [];
-    products.map(prod => {
-      prod!=='' ?
-      prodList.push(<Text style={{fontSize:15,color:'#999',marginTop:5,marginLeft:25}}>{prod}</Text>)
-      :
-      null
-    })
-    events.map(e => {
-      e!=='' ?
-      eveList.push(<Text style={{fontSize:15,color:'#999',marginTop:5,marginLeft:25}}>{e}</Text>)
-      :
-      null
-    })
-    places.map(place => {
-      place!=='' ?
-      plaList.push(<Text style={{fontSize:15,color:'#999',marginTop:5,marginLeft:25}}>{place}</Text>)
+  renderFeedback(feedback, usersWithFeedback){
+    let score = 0, result = [];
+    if(usersWithFeedback!==0){
+      score = Math.floor(feedback/usersWithFeedback)
+    }
+    for(let i = 0; i < score; i++){
+      result.push(<Icon name='star' size={50} color='white' style={{marginRight:10}}/>)
+    }
+    for(let i = score; i < 3; i++){
+      result.push(<Icon name='star' size={50} color='#f7ca79' style={{marginRight:10}}/>)
+    }
+    return (
+      <View style={{flexDirection:'row'}}>
+        {result}
+      </View>
+    )
+  }
+
+  renderPreferences(preferences){
+    let result = []
+    preferences.map((p,index) => {
+      p!=='' ?
+      result.push(<Text key={index} style={{fontSize:15,color:'#999',marginTop:5,marginLeft:25}}>{p}</Text>)
       :
       null
     })
@@ -113,13 +137,8 @@ export default class Profile extends React.Component {
     return (
       <View style={{flexDirection:'row',justifyContent:'center'}}>
       <View style={{alignSelf: 'flex-start'}}>
-      <Text style={{fontSize:25,color:'#f6c267',marginTop:20,textAlign:'center'}}>Você gosta de</Text>
-        <Text style={{fontSize:20,color:'#f6c267',marginTop:15,marginLeft:15}}>Produtos...</Text>
-        {prodList}
-        <Text style={{fontSize:20,color:'#f6c267',marginTop:15,marginLeft:15}}>Eventos...</Text>
-        {eveList}
-        <Text style={{fontSize:20,color:'#f6c267',marginTop:15,marginLeft:15}}>Estabelecimentos...</Text>
-        {plaList}
+      <Text style={{fontSize:25,color:'#f6c267',marginTop:20,textAlign:'center'}}>Sobre seu estabelecimento</Text>
+        {result}
       </View>
       </View>
     );
@@ -129,7 +148,7 @@ export default class Profile extends React.Component {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         // User is signed in.
-        firebase.database().ref('users/'+user.uid).on('value', snapshot => {
+        firebase.database().ref('commercial-accounts/'+user.uid).on('value', snapshot => {
           this.setState({user:user, userData:snapshot.val()});
         });
       }
@@ -169,6 +188,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 8
   },
+  textInput: {
+    height: 40,
+    borderColor: 'grey',
+    borderBottomWidth: 1,
+    padding:10,
+  },
   button: {
     paddingLeft:40,
     paddingRight:40,
@@ -176,7 +201,7 @@ const styles = StyleSheet.create({
     paddingBottom:5,
     backgroundColor:"#f6ba53",
     borderRadius:20,
-    marginBottom:40,
+    marginBottom:20,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
