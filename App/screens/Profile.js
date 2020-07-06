@@ -59,11 +59,6 @@ export default class Profile extends React.Component {
               <Text style={{fontSize:15,color:'#fff',textAlign:'center',marginBottom:10}}>{userData.email}</Text>
             </View>
             </View>
-            <View style={{flexDirection:'row',justifyContent:'center'}}>
-              <Image source={require('./../assets/gluten-free.png')} style={{width:50,height:50}} />
-              <Image source={require('./../assets/gluten-free.png')} style={{width:50,height:50}} />
-              <Image source={require('./../assets/gluten-free.png')} style={{width:50,height:50}} />
-            </View>
 
             <Text style={{fontSize:25,color:'#f6c267',marginTop:20,textAlign:'center'}}>Você tem</Text>
             <View style={{flexDirection:'column',alignItems:'center',width:'100%'}}>
@@ -79,14 +74,12 @@ export default class Profile extends React.Component {
 
             {this.renderPreferences(userData.preferences.products,userData.preferences.events,userData.preferences.places)}
 
-            <TouchableOpacity style={{flexDirection:'column',alignItems:'center',width:'100%',margin:20,marginTop:60}} onPress={()=>this.props.navigation.navigate("Preferences")}>
-              <Text style={{fontSize:20,color:'#999',textAlign:'center'}}>Quer editar suas preferências?</Text>
-            </TouchableOpacity>
-
-            <View style={{flexDirection:'column',alignItems:'center',width:'100%'}}>
+            <View style={{flexDirection:'column',alignItems:'center',width:'100%',marginTop:10}}>
+              <Text style={{fontSize:20,color:'gray'}}>Quer editar?</Text>
               <TouchableOpacity
-                style={styles.button} onPress={()=>this.signOut()}>
-                <Text style={{fontSize:25,color:'white'}}>Sair</Text>
+                style={styles.button}
+                onPress={()=>this.props.navigation.navigate("Preferences")}>
+                <Text style={{fontSize:25,color:'white'}}>Editar</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

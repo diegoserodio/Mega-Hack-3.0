@@ -12,7 +12,9 @@ export default class CommercialProfile extends React.Component {
     this.state = {
       user: null,
       userData:null,
-      discountCode:null
+      discountCode:null,
+      eventDescription:null,
+      eventTitle:null
     }
   }
 
@@ -21,7 +23,7 @@ export default class CommercialProfile extends React.Component {
   }
 
   render() {
-    let {userData,discountCode} = this.state;
+    let {userData,discountCode,eventDescription, eventTitle} = this.state;
     if(userData===null){
       return (
         <View style={styles.container}>
@@ -63,7 +65,7 @@ export default class CommercialProfile extends React.Component {
 
               <Text style={{fontSize:25,color:'#fff',textAlign:'center',marginTop:40,marginLeft:40,marginRight:40}}>Tem um cliente com desconto do app?</Text>
               <TextInput
-                style={styles.textInput}
+                style={{...styles.textInput,color:'white',textAlign:'center',width:'80%',fontSize:15}}
                 placeholder='Digite o código de ativação do desconto'
                 placeholderTextColor="#fff"
                 onChangeText={text => this.setState({discountCode:text})}
@@ -91,21 +93,96 @@ export default class CommercialProfile extends React.Component {
             </View>
 
             <View style={{flexDirection:'column',alignItems:'center',width:'100%',marginTop:60}}>
+            <Text style={{fontSize:25,color:'#f6ba53'}}>Vai organizar um evento?</Text>
+            <TextInput
+              style={{...styles.textInput,width:'70%',textAlign:'center',fontSize:20}}
+              placeholder='Digite o título do seu evento'
+              multiline={true}
+              placeholderTextColor="#999"
+              onChangeText={text => this.setState({eventTitle:text})}
+              value={eventTitle}
+            />
+            <TextInput
+              style={{...styles.textInput,width:'70%',marginTop:10,fontSize:15}}
+              placeholder='Digite a descrição do seu evento'
+              placeholderTextColor="#999"
+              multiline={true}
+              onChangeText={text => this.setState({eventDescription:text})}
+              value={eventDescription}
+            />
               <TouchableOpacity
-                style={styles.button}>
-                <Text style={{fontSize:25,color:'white'}}>Divulgar um evento</Text>
+                style={{...styles.button,marginTop:20}}
+                onPress={()=>{
+                  Alert.alert(
+                    "Divulgar Evento",
+                    "Será cobrada de R$6,00 para realizar a divulgação do seu evento durante 12 dias",
+                    [
+                      {
+                        text: "Cancelar",
+                        style: "cancel"
+                      },
+                      { text: "OK", onPress: () => this.postEvent() }
+                    ],
+                    { cancelable: true }
+                  );
+                }}>
+                <Text style={{fontSize:25,color:'white'}}>Divulgar</Text>
               </TouchableOpacity>
             </View>
 
-            <View style={{flexDirection:'column',alignItems:'center',width:'100%',marginBottom:40}}>
+            <View style={{flexDirection:'column',alignItems:'center',width:'100%',marginTop:60}}>
+            <Text style={{fontSize:25,color:'#f6ba53',textAlign:'center'}}>Que tal impulsionar seu estabalecimento nas buscas?</Text>
               <TouchableOpacity
-                style={styles.button} onPress={()=>this.signOut()}>
-                <Text style={{fontSize:25,color:'white'}}>Sair</Text>
+                style={{...styles.button,marginTop:20,marginBottom:60}}
+                onPress={()=>{
+                  Alert.alert(
+                    "Impulsionar divulgação",
+                    "Será cobrada uma taxa de R$6,00 para impulsionar seu estabelecimento nas buscas, durante 12 dias",
+                    [
+                      {
+                        text: "Cancelar",
+                        style: "cancel"
+                      },
+                      { text: "OK", onPress: () => this.boost() }
+                    ],
+                    { cancelable: true }
+                  );
+                }}>
+                <Text style={{fontSize:25,color:'white'}}>Impulsionar</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
       </View>
     )
+  }
+
+  boost(){
+    let {user,userData} = this.state;
+    firebase
+    .database()
+    .ref('/commercial-accounts/'+user.uid)
+    .update({
+      boostPlan: 'active',
+    })
+    .then(() => {
+      alert("Estabelecimento impulsionado com sucesso!");
+    })
+    .catch(e => alert(e))
+  }
+
+  postEvent(){
+    let {user,userData,discountCode,eventDescription,eventTitle} = this.state;
+    let eventId = Date.now();
+    firebase
+    .database()
+    .ref('/commercial-accounts/'+eventId)
+    .set({
+      type: 'event',
+      profilePic:userData.profilePic,
+      eventDescription:eventDescription,
+      eventTitle:eventTitle
+    })
+    .then(() => alert("Evento divulgado com sucesso!"))
   }
 
   validateCupon(discountCode){
@@ -190,17 +267,6 @@ export default class CommercialProfile extends React.Component {
       }
     });
   }
-
-  signOut() {
-    firebase.auth()
-    .signOut()
-    .then(() => {
-      this.props.navigation.navigate("SignIn");
-    })
-    .catch(() => {
-      alert("Um erro inesperado ocorreu");
-    });
-  }
 }
 
 const styles = StyleSheet.create({
@@ -225,7 +291,7 @@ const styles = StyleSheet.create({
     elevation: 8
   },
   textInput: {
-    height: 40,
+    height: 'auto',
     borderColor: 'grey',
     borderBottomWidth: 1,
     padding:10,

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Text, View, Image, StyleSheet, Button, Alert } from 'react-native';
+import { Text, View, Image, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class Camera extends React.Component {
   constructor(props){
@@ -30,6 +31,11 @@ export default class Camera extends React.Component {
     let {scanned} = this.state;
     return (
       <View style={styles.container}>
+      <TouchableOpacity
+        style={{marginLeft:30,marginTop:30}}
+        onPress={()=>this.props.navigation.goBack()}>
+        <Icon name='arrow-left' size={30} color='#f6ba53' />
+      </TouchableOpacity>
         <View style={{
             flex: 1,
             flexDirection: 'column',
