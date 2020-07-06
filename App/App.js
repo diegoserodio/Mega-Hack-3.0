@@ -23,6 +23,7 @@ if (!firebase.apps.length) {
 //IMPORT SCREENS
 import Main from './screens/Main'
 import CommercialMain from './screens/CommercialMain'
+import CommercialDisplay from './screens/CommercialDisplay'
 import Loading from './screens/Loading'
 import PerfilChoice from './screens/PerfilChoice'
 import CommercialSignUp from './screens/CommercialSignUp'
@@ -44,6 +45,12 @@ const AppNavigator = createStackNavigator(
       },
     CommercialMain: {
         screen: CommercialMain,
+        navigationOptions: {
+          headerShown: false,
+        },
+      },
+    CommercialDisplay: {
+        screen: CommercialDisplay,
         navigationOptions: {
           headerShown: false,
         },

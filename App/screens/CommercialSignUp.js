@@ -222,7 +222,10 @@ export default class CommercialSignUp extends React.Component {
               cnpj:cnpj,
               phone:phone,
               feedback:0,
-              usersWithFeedback:0
+              usersWithFeedback:0,
+              preferences: {
+                '0':'',
+              }
             })
             .then(() => this.props.navigation.navigate("CommercialPreferences"))
           })

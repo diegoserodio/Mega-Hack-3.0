@@ -185,7 +185,12 @@ export default class SignUp extends React.Component {
               displayName:name,
               profilePic:imageUri,
               email: email,
-              points:0
+              points:0,
+              preferences: {
+                products: [],
+                events: [],
+                places: []
+              }
             })
             .then(() => this.props.navigation.navigate("Preferences"))
           })

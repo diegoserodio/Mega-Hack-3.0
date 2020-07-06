@@ -13,8 +13,8 @@ export default class Scanner extends React.Component {
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#f9d79c" barStyle='dark-content' />
-        <Header title='Escaner' logo={false} arrowBack={false}/>
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+        <Text style={{fontSize:25,color:'#f6c267',marginTop:10,marginBottom:20,textAlign:'left'}}>Escanear código de barras?</Text>
           <TouchableOpacity
             style={{
               padding:20,
@@ -22,7 +22,7 @@ export default class Scanner extends React.Component {
               borderWidth:1,
               borderRadius:10,
               backgroundColor:"#f6ba53"}} onPress={()=>this.props.navigation.navigate("Camera")}>
-            <Text style={{fontSize:25,color:'white'}}>Escanear QR code</Text>
+            <Text style={{fontSize:25,color:'white'}}>Escanear</Text>
           </TouchableOpacity>
         </View>
       </View>

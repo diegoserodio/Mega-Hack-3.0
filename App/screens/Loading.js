@@ -29,7 +29,7 @@ export default class Loading extends React.Component {
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#f9d79c" barStyle='dark-content' />
-        <Header title='Indefinido' logo={false} arrowBack={false}/>
+        <Header title='' logo={false} arrowBack={false}/>
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
           <Text style={{textAlign:'center', fontSize:32}}>Quase lá...</Text>
         </View>
