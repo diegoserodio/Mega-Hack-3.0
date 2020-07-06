@@ -6,6 +6,8 @@
 * [Firebase](https://firebase.google.com/) Plataforma de desenvolvimento de aplicativos para dispositivos móveis e web.
 
 # INSTRUÇÕES:
+* A branch de produção é a Master
+
 * Antes de tudo, instalar as dependências executando no terminal
 ```sh
 $ npm install
