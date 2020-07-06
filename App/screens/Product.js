@@ -12,6 +12,9 @@ export default class Product extends React.Component {
   constructor(props){
     super(props);
     this.state = {
+      id:null,
+      user:null,
+      userData:null,
       prodInfo:null,
       collapsed: true,
       validationCode:null
@@ -23,7 +26,10 @@ export default class Product extends React.Component {
   };
 
   componentDidMount(){
-    this.getProductData('aaaaa');
+    let barcode = this.props.navigation.state.params.data;
+    this.setState({id:barcode.substr(barcode.length - 6)});
+    this.getProductData(barcode.substr(barcode.length - 6));
+    this.getUserData();
   }
 
   render() {
@@ -52,16 +58,36 @@ export default class Product extends React.Component {
         <View style={{flexDirection:'row',justifyContent:'space-between',marginLeft:10,marginRight:30}}>
           <Image source={{uri:prodInfo.thumb}} style={{width:150,height:250}} />
           <View style={{flexDirection:'column',justifyContent:'flex-end'}}>
-            {!prodInfo.allergen.includes("cevada")&&
-            <View style={{flexDirection:'row',alignItems:'center'}}>
+            {!prodInfo.allergen.includes("Cevada") ?
+              <View style={{flexDirection:'row',alignItems:'center'}}>
+                  <Image source={require('./../assets/gluten-free.png')} style={{width:70,height:70}} />
+                  <Text style={{fontSize:15,color:'#999'}}>Não contém cevada</Text>
+              </View>
+              :
+              <View style={{flexDirection:'row',alignItems:'center'}}>
+                  <Image source={require('./../assets/gluten.png')} style={{width:70,height:70}} />
+                  <Text style={{fontSize:15,color:'#999'}}>Contém cevada</Text>
+              </View>}
+            {!prodInfo.allergen.includes("Glúten") ?
+              <View style={{flexDirection:'row',alignItems:'center'}}>
                 <Image source={require('./../assets/gluten-free.png')} style={{width:70,height:70}} />
-                <Text style={{fontSize:15,color:'#999'}}>Não contém cevada</Text>
-            </View>}
-            {!prodInfo.allergen.includes("gluten")&&
-            <View style={{flexDirection:'row',alignItems:'center'}}>
-              <Image source={require('./../assets/gluten-free.png')} style={{width:70,height:70}} />
-              <Text style={{fontSize:15,color:'#999'}}>Não contém glúten</Text>
-            </View>}
+                <Text style={{fontSize:15,color:'#999'}}>Não contém glúten</Text>
+              </View>
+              :
+              <View style={{flexDirection:'row',alignItems:'center'}}>
+                <Image source={require('./../assets/gluten.png')} style={{width:70,height:70}} />
+                <Text style={{fontSize:15,color:'#999'}}>Contém glúten</Text>
+              </View>}
+            {!prodInfo.allergen.includes("Lactose") ?
+              <View style={{flexDirection:'row',alignItems:'center'}}>
+                <Image source={require('./../assets/milk-free.png')} style={{width:70,height:70}} />
+                <Text style={{fontSize:15,color:'#999'}}>Não contém lactose</Text>
+              </View>
+              :
+              <View style={{flexDirection:'row',alignItems:'center'}}>
+                <Image source={require('./../assets/milk.png')} style={{width:70,height:70}} />
+                <Text style={{fontSize:15,color:'#999'}}>Contém lactose</Text>
+              </View>}
           </View>
         </View>
 
@@ -78,7 +104,9 @@ export default class Product extends React.Component {
         </Collapsible>
 
         <View style={{flexDirection:'column',alignItems:'center'}}>
-        <Text style={{textAlign:'center',fontSize:32,color:'#f6ba53',marginTop:20}}>Ganhar +{prodInfo.points} pontos</Text>
+        <TouchableOpacity onPress={()=>this.rescuePoints(this.state.validationCode,prodInfo.validation)}>
+          <Text style={{textAlign:'center',fontSize:32,color:'#f6ba53',marginTop:20}}>Ganhar +{prodInfo.points} pontos</Text>
+        </TouchableOpacity>
         <TextInput
           style={styles.textInput}
           placeholder='Digite o código de validação do produto'
@@ -105,8 +133,61 @@ export default class Product extends React.Component {
     )
   }
 
+  rescuePoints(validationCode, validation){
+    let {id,prodInfo} = this.state;
+    validation = validation.split(',');
+    if(validation.includes(validationCode)){
+      let index = validation.indexOf(validationCode);
+      if (index > -1) {
+        validation.splice(index, 1);
+      }
+      let newValidation='';
+      validation.map(code => newValidation+=code+',');
+      newValidation = newValidation.substring(0, newValidation.length - 1)
+      firebase
+      .database()
+      .ref('/products/'+id)
+      .update({
+        validation: newValidation
+      })
+      .then(()=>{
+        this.addPoints(prodInfo.points)
+      })
+    }else{
+      alert("Código inválido, tente novamente")
+    }
+  }
+
+  addPoints(value){
+    let {user,userData} = this.state;
+    firebase
+    .database()
+    .ref('/users/'+user.uid)
+    .update({
+      points: userData.points+value
+    })
+    .then(() => {
+      alert(value+" pontos creditados! Agradecemos por comprar os produtos Ambev");
+      this.props.navigation.navigate("Profile");
+    })
+  }
+
   getProductData(id) {
-    firebase.database().ref('products/').on('value', snapshot => this.setState({prodInfo:snapshot.val()[id]}));
+    firebase
+    .database()
+    .ref('products/')
+    .on('value', snapshot => this.setState({prodInfo:snapshot.val()[id]}));
+  }
+
+  getUserData() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in.
+        firebase.database().ref('users/'+user.uid).on('value', snapshot => {
+          this.setState({user:user, userData:snapshot.val()});
+        });
+      }
+    });
   }
 }
 

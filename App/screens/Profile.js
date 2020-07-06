@@ -54,37 +54,84 @@ export default class Profile extends React.Component {
 
             <View style={{ overflow: 'hidden', paddingBottom: 5 }}>
             <View style={styles.profileHeader}>
-              <Image source={require('./../assets/user.png')} style={{width:200,height:200,margin:20}} tintColor='white'/>
+              <Image source={{uri:userData.profilePic}} style={{width:150,height:150,borderRadius:150,margin:20}}/>
               <Text style={{fontSize:25,color:'#fff',textAlign:'center'}}>{userData.displayName}</Text>
               <Text style={{fontSize:15,color:'#fff',textAlign:'center',marginBottom:10}}>{userData.email}</Text>
             </View>
-            </View>
-            <View style={{flexDirection:'row',justifyContent:'center'}}>
-              <Image source={require('./../assets/gluten-free.png')} style={{width:50,height:50}} />
-              <Image source={require('./../assets/gluten-free.png')} style={{width:50,height:50}} />
-              <Image source={require('./../assets/gluten-free.png')} style={{width:50,height:50}} />
             </View>
 
             <Text style={{fontSize:25,color:'#f6c267',marginTop:20,textAlign:'center'}}>Você tem</Text>
             <View style={{flexDirection:'column',alignItems:'center',width:'100%'}}>
               <Text style={{fontSize:35,color:'#999'}}>{userData.points} pontos</Text>
             </View>
+            <View style={{alignItems:'center', justifyContent:'center'}}>
+              <TouchableOpacity
+                style={{...styles.button,backgroundColor:"#f7ca79",marginTop:20}}
+                onPress={()=>this.getCupons()}>
+                <Text style={{fontSize:25,color:'white'}}>Resgatar</Text>
+              </TouchableOpacity>
+            </View>
 
             {this.renderPreferences(userData.preferences.products,userData.preferences.events,userData.preferences.places)}
 
-            <TouchableOpacity style={{flexDirection:'column',alignItems:'center',width:'100%',margin:20,marginTop:60}} onPress={()=>this.props.navigation.navigate("Preferences")}>
-              <Text style={{fontSize:20,color:'#999',textAlign:'center'}}>Quer editar suas preferências?</Text>
-            </TouchableOpacity>
-
-            <View style={{flexDirection:'column',alignItems:'center',width:'100%'}}>
+            <View style={{flexDirection:'column',alignItems:'center',width:'100%',marginTop:10}}>
+              <Text style={{fontSize:20,color:'gray'}}>Quer editar?</Text>
               <TouchableOpacity
-                style={styles.button} onPress={()=>this.signOut()}>
-                <Text style={{fontSize:25,color:'white'}}>Sair</Text>
+                style={styles.button}
+                onPress={()=>this.props.navigation.navigate("Preferences")}>
+                <Text style={{fontSize:25,color:'white'}}>Editar</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
       </View>
     )
+  }
+
+  getCupons(){
+    let {user,userData} = this.state;
+    let cuponIndex = user.uid.substr(-5);
+    firebase.database().ref('cupons/'+cuponIndex).once('value', snapshot => {
+      if(snapshot.val()===null)
+        this.generateCupons(cuponIndex, null);
+      else
+        this.generateCupons(cuponIndex, snapshot.val().cupons);
+    });
+  }
+
+  generateCupons(cuponIndex, existingCupons=[]){
+    let {user,userData} = this.state;
+    if(!existingCupons)existingCupons=[];
+    let currPoints = userData.points;
+    let cuponsQtn = Math.floor(currPoints/100);
+    let cuponsIds = existingCupons;
+    for(let i = 0; i < cuponsQtn; i++){
+      cuponsIds.push(Math.floor(Math.random() * 1000) + 1);
+    }
+
+    let message = '';
+    cuponsIds.map((ids,index) => message+=`Cupom ${index+1}:${cuponIndex}${ids}\n`)
+    alert(message)
+    this.subPoints(cuponsQtn*100);
+    firebase
+    .database()
+    .ref('/cupons/'+cuponIndex)
+    .set({
+      cupons: cuponsIds,
+      displayName: userData.displayName
+    })
+  }
+
+  subPoints(value){
+    let {user,userData} = this.state;
+    let currPoints = userData.points;
+    currPoints -= value;
+    if(currPoints<=0)currPoints=0;
+    firebase
+    .database()
+    .ref('/users/'+user.uid)
+    .update({
+      points: currPoints
+    })
   }
 
   renderPreferences(products,events,places){

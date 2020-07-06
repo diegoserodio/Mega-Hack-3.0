@@ -54,15 +54,13 @@ export default class SignIn extends React.Component {
 
       </View>
 
-        <Text style={{fontSize:15, color:'#fff',marginTop:20}}>Ou</Text>
-        <TouchableOpacity
-          style={{
-            alignItems:'center',
-            justifyContent:'center',
-            marginTop:20}}
-          onPress={() => this.props.navigation.navigate("SignUp")}>
-          <Text style={{fontSize:15, color:'#fff'}}>Cadastre-se</Text>
+        <Text style={{fontSize:15, color:'#fff',marginTop:20}}>Ainda não possui uma conta?</Text>
+        <View style={{flexDirection:'row',marginBottom:40}}>
+        <Text style={{fontSize:15, color:'#fff'}}>Então </Text>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate("PerfilChoice")}>
+          <Text style={{fontSize:15, color:'#fff',textDecorationLine: 'underline'}}>cadastre-se</Text>
         </TouchableOpacity>
+        </View>
       </View>
       </ScrollView>
       </View>
@@ -102,7 +100,6 @@ export default class SignIn extends React.Component {
     firebase
     .auth()
     .signInWithEmailAndPassword(email, password)
-    .then(() => this.props.navigation.navigate("Main"))
     .catch(error => this.setState({error:error.message}))
   }
 }

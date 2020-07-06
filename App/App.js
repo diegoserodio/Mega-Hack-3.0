@@ -22,14 +22,18 @@ if (!firebase.apps.length) {
 
 //IMPORT SCREENS
 import Main from './screens/Main'
+import CommercialMain from './screens/CommercialMain'
+import CommercialDisplay from './screens/CommercialDisplay'
 import Loading from './screens/Loading'
+import PerfilChoice from './screens/PerfilChoice'
+import CommercialSignUp from './screens/CommercialSignUp'
 import SignUp from './screens/SignUp'
 import SignIn from './screens/SignIn'
-import Cam from './screens/Cam'
+import Camera from './screens/Camera'
 import Product from './screens/Product'
 import Settings from './screens/Settings'
 import Preferences from './screens/Preferences'
-import UpdatePreferences from './screens/UpdatePreferences'
+import CommercialPreferences from './screens/CommercialPreferences'
 
 const AppNavigator = createStackNavigator(
   {
@@ -39,14 +43,38 @@ const AppNavigator = createStackNavigator(
           headerShown: false,
         },
       },
-    Cam: {
-        screen: Cam,
+    CommercialMain: {
+        screen: CommercialMain,
+        navigationOptions: {
+          headerShown: false,
+        },
+      },
+    CommercialDisplay: {
+        screen: CommercialDisplay,
+        navigationOptions: {
+          headerShown: false,
+        },
+      },
+    Camera: {
+        screen: Camera,
         navigationOptions: {
           headerShown: false,
         },
       },
     Loading: {
         screen: Loading,
+        navigationOptions: {
+          headerShown: false,
+        },
+      },
+    PerfilChoice: {
+        screen: PerfilChoice,
+        navigationOptions: {
+          headerShown: false,
+        },
+      },
+    CommercialSignUp: {
+        screen: CommercialSignUp,
         navigationOptions: {
           headerShown: false,
         },
@@ -75,8 +103,14 @@ const AppNavigator = createStackNavigator(
             headerShown: false,
           },
         },
-    UpdatePreferences: {
-          screen: UpdatePreferences,
+    CommercialPreferences: {
+          screen: CommercialPreferences,
+          navigationOptions: {
+            headerShown: false,
+          },
+        },
+    Product: {
+          screen: Product,
           navigationOptions: {
             headerShown: false,
           },
